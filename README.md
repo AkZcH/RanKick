@@ -36,151 +36,143 @@ A fully decentralized sports ranking platform for football (soccer), powered by 
 
 ## 📂 Folder Structure
 
+```
 project-root/
 │
-├── app/ # React app (frontend)
-│ ├── components/
-│ ├── pages/ # Next.js routing
-│ ├── utils/ # Solana/Anchor helpers
-│ └── public/
+├── app/                    # React app (frontend)
+│   ├── components/
+│   ├── pages/             # Next.js routing
+│   ├── utils/             # Solana/Anchor helpers
+│   └── public/
 │
-├── programs/ # Anchor (Rust) smart contracts
-│ ├── src/
-│ └── Cargo.toml
+├── programs/              # Anchor (Rust) smart contracts
+│   ├── src/
+│   └── Cargo.toml
 │
-├── migrations/ # Anchor deployment scripts
-│
-├── target/ # Anchor build artifacts
-│
+├── migrations/            # Anchor deployment scripts
+├── target/                # Anchor build artifacts
 ├── README.md
 └── Anchor.toml
+```
 
 ## 🧠 Ranking Algorithm (ELO)
 
-Implemented on-chain via Anchor.  
+Implemented on-chain via Anchor:
+
 ```text
 R_new = R_old + K * (S_actual - S_expected)
 
 S_actual = 1 for win, 0.5 for draw, 0 for loss
-
 S_expected = 1 / (1 + 10^((R_opp - R_self)/400))
 
 Initial ratings start at 1500. Draws and underdog wins are handled fairly.
+```
 
-🔐 Solana Smart Contracts (Anchor)
-Key Programs:
+---
 
-initialize_team(name) – Registers a team with a default rating
+## 🔐 Solana Smart Contracts (Anchor)
 
-update_ranking(team_a, team_b, outcome) – Updates ELO ratings based on match result
+**Key Programs:**
+- `initialize_team(name)` – Registers a team with a default rating
+- `update_ranking(team_a, team_b, outcome)` – Updates ELO ratings based on match result
 
 All contract state is stored on-chain in team accounts. Verified transactions ensure ranking legitimacy.
 
-📡 Oracle Data Integration
+---
+
+## 📡 Oracle Data Integration
+
 Choose one:
 
-✅ Switchboard (Solana-native)
-Create an Oracle Queue
+### ✅ Switchboard (Solana-native)
+- Create an Oracle Queue
+- Define REST endpoint (e.g. Sportmonks)
+- Feed parsed scores into your smart contract
 
-Define REST endpoint (e.g. Sportmonks)
+### ✅ Chainlink (cross-chain)
+- Use Chainlink External Adapter
+- Fetch data from Sportmonks or API-Football
+- Chainlink node pushes scores to Solana program
 
-Feed parsed scores into your smart contract
+---
 
-✅ Chainlink (cross-chain)
-Use Chainlink External Adapter
+## 🛠 Setup Instructions
 
-Fetch data from Sportmonks or API-Football
+### Prerequisites
+- Node.js, Yarn/NPM
+- Solana CLI (`solana --version`)
+- Anchor CLI (`anchor --version`)
+- Rust toolchain (`rustup`)
+- Phantom or Sollet wallet
 
-Chainlink node pushes scores to Solana program
-
-📸 Frontend Screenshots
-Add screenshots of your leaderboard, team ratings, match inputs, etc.
-
-🛠 Setup Instructions
-Prerequisites
-Node.js, Yarn/NPM
-
-Solana CLI (solana --version)
-
-Anchor CLI (anchor --version)
-
-Rust toolchain (rustup)
-
-Phantom or Sollet wallet
-
-1. Clone the repo
-bash
-Copy
-Edit
+### 1. Clone the repo
+```bash
 git clone https://github.com/your-username/football-ranking-chain.git
 cd football-ranking-chain
+```
 
-2. Install dependencies
-bash
-Copy
-Edit
+### 2. Install dependencies
+```bash
 cd app
 npm install
+```
 
-3. Configure Solana
-bash
-Copy
-Edit
+### 3. Configure Solana
+```bash
 solana config set --url devnet
 solana airdrop 2
 anchor build
 anchor deploy
-Update the program ID in your frontend .env.local.
+```
+Update the program ID in your frontend `.env.local`.
 
-4. Run the app
-bash
-Copy
-Edit
+### 4. Run the app
+```bash
 cd app
 npm run dev
-🚀 Deployment (Vercel)
-Push frontend to GitHub
+```
 
-Connect repo to https://vercel.com
+---
 
-Add environment variables:
+## 🚀 Deployment (Vercel)
 
-NEXT_PUBLIC_PROGRAM_ID
+1. Push frontend to GitHub
+2. Connect repo to [vercel.com](https://vercel.com)
+3. Add environment variables:
+   - `NEXT_PUBLIC_PROGRAM_ID`
+   - `NEXT_PUBLIC_SOLANA_NETWORK` (e.g. https://api.devnet.solana.com)
+4. Deploy and copy the public link
 
-NEXT_PUBLIC_SOLANA_NETWORK (e.g. https://api.devnet.solana.com)
+---
 
-Deploy and copy the public link
+## 🧪 Testing
 
-🧪 Testing
-Write Anchor unit tests in /tests/. Run with:
-
-bash
-Copy
-Edit
+Write Anchor unit tests in `/tests/`. Run with:
+```bash
 anchor test
+```
+
 For frontend, use React Testing Library and Jest.
 
-🧠 TODO
- Add team stats history tracking
+---
 
- Enable user wallet voting for MVP players
+## 🧠 TODO
 
- NFT minting for top players
+- [ ] Add team stats history tracking
+- [ ] Enable user wallet voting for MVP players
+- [ ] NFT minting for top players
+- [ ] Multi-league support
 
- Multi-league support
+---
 
-📚 References
-Solana Anchor Book
+## 📚 References
 
-Switchboard Docs
-
-Chainlink Sports Feeds
-
-Sportmonks Soccer API
-
-GeeksForGeeks – ELO Rating
-
-SOAR Leaderboard SDK
+- [Solana Anchor Book](https://book.anchor-lang.com/)
+- [Switchboard Docs](https://docs.switchboard.xyz/)
+- [Chainlink Sports Feeds](https://docs.chain.link/)
+- [Sportmonks Soccer API](https://www.sportmonks.com/)
+- [GeeksForGeeks – ELO Rating](https://www.geeksforgeeks.org/elo-rating-algorithm/)
+- [SOAR Leaderboard SDK](https://soar.game/)
 
 🧑‍💻 Author
 Akshat Chauhan
